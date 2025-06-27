@@ -102,7 +102,7 @@ Toast.makeText(this, "无障碍实例空？ " + (MyAccessibilityService.instance
                             floatingView.redraw(y1, if (!mark.isNaN()) mark else y2)
                         }
                     } else if (SystemClock.uptimeMillis() - actionDownTime >= 500L) {
-                        copyTextToClipboard(MyAccessibilityService.instance?.currentClassName + "/n" + e.rawY.toInt())
+                        copyTextToClipboard(MyAccessibilityService.instance?.currentClassName + "\n" + e.rawY.toInt())
                         floatingView.redraw(e.y, null)
                     }
 
