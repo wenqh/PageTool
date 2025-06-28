@@ -11,7 +11,7 @@
         "y1": 152
     },
     "com.example.c001apk": {
-        "y1": 151.1,
+        "y1": 256,
         "duration": 600
     },
     "com.huanchengfly.tieba.post": {
