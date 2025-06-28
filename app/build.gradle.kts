@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.wqh.app"
-    compileSdk = 28
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.wqh.app"
-        minSdk = 24
-        targetSdk = 27
+        minSdk = 28
+        targetSdk = 28
         versionCode = 1
         versionName = "1.0"
 

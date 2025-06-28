@@ -92,14 +92,17 @@ class FloatingService : Service() {
                                         windowManager.updateViewLayout(floatingView, params)
                                         simulatedFlag = false
                                     }
+                                    override fun onCancelled(gestureDescription: GestureDescription?) {
+                                        super.onCancelled(gestureDescription)
+                                        onCompleted(gestureDescription)
+                                    }
                                 }, null
-                            )}, 50)
+                            )}, 65)
                         floatingView.performClick()
                     } else if(dy > touchSlop && dy > dx) {
                         MyAccessibilityService.instance?.scrollApp(e.rawY <= startY)
-Toast.makeText(this, "无障碍实例空？ " + (MyAccessibilityService.instance == null), Toast.LENGTH_SHORT).show()
                         MyAccessibilityService.instance?.appCfg?.apply {
-                            floatingView.redraw(y1, if (!mark.isNaN()) mark else y2)
+                            floatingView.redraw(if (!mark.isNaN()) mark else y1, y2)
                         }
                     } else if (SystemClock.uptimeMillis() - actionDownTime >= 500L) {
                         copyTextToClipboard(MyAccessibilityService.instance?.currentClassName + "\n" + e.rawY.toInt())

@@ -15,9 +15,7 @@ object SettingUtil {
 
     fun save(context: Context, data: String) {
         val prefs = getPreferences(context)
-        prefs.edit {
-            putString(KEY, data.trimIndent())
-        }
+        prefs.edit().putString(KEY, data.trimIndent())
         this.data = JSONObject(data)
     }
 

@@ -52,13 +52,15 @@ class MainActivity : Activity() {
                 cfgEditText.setText(jsonText)
 
                 SettingUtil.save(context, jsonText) // 格式化 JSON 保存
-                val toast = Toast.makeText(context, "配置已保存", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
+                Toast.makeText(context, "配置已保存", Toast.LENGTH_SHORT).apply {
+                    setGravity(Gravity.CENTER, 0, 0)
+                    show()
+                }
             } catch (e: Exception) {
-                val toast = Toast.makeText(context, "JSON 格式错误", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
+                Toast.makeText(context, "JSON 格式错误", Toast.LENGTH_SHORT).apply {
+                    setGravity(Gravity.CENTER, 0, 0)
+                    show()
+                }
             }
         }
     }

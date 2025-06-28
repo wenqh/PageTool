@@ -29,7 +29,12 @@ class MyAccessibilityService : AccessibilityService() {
         instance = this
         Log.i(null, "无障碍服务已连接")
 
-        /*val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        /*
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val bounds: Rect = windowManager.currentWindowMetrics.bounds
+        centerX = bounds.width() / 2f
+
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
@@ -39,7 +44,9 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         event?.let {
             if (it.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-                && it.packageName != "com.android.systemui" && it.packageName != "com.xrz.standby"
+                && it.packageName != "com.android.systemui"
+                && it.packageName != "com.google.android.inputmethod.latin"
+                && it.packageName != "com.xrz.standby"
             ) {
                 currentPackageName = it.packageName?.toString()
                 currentClassName = it.className?.toString()
@@ -56,15 +63,15 @@ class MyAccessibilityService : AccessibilityService() {
             return
         }
 
-        var y1 = appCfg.y1
-        var y2 = appCfg.y2
+        var start = appCfg.y2
+        var end = appCfg.y1
         if (!up) {
-            y1 = y2.also { y2 = y1 }
+            start = end.also { end = start }
         }
 
         val path = Path().apply {
-            moveTo(centerX, y1)
-            lineTo(centerX, y2)
+            moveTo(centerX, start)
+            lineTo(centerX, end)
         }
         val gesture = GestureDescription.Builder()
             .addStroke(GestureDescription.StrokeDescription(path, 0, appCfg.duration))
