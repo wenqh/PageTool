@@ -44,6 +44,7 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         event?.let {
             if (it.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                && it.packageName != null
                 && it.packageName != "com.android.systemui"
                 && it.packageName != "com.google.android.inputmethod.latin"
                 && it.packageName != "com.xrz.standby"
