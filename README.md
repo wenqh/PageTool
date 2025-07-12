@@ -3,7 +3,7 @@
     "*": {
         "scroll": "GESTURE",
         "y1": 46,
-        "y2": 1647,
+        "y2": 1620,
         "duration": 100,
         "mark": null
     },
@@ -12,8 +12,16 @@
     },
     "com.tencent.mm": {
         "y1": 144,
-        "y2": 1487,
+        "y2": 1532,
         "duration": 150
+    },
+    "com.openai.chatgpt": {
+        "y1": 165,
+        "y2": 1368
+    },
+    "com.guozhigq.pilipala": {
+        "y1": 315,
+        "duration": 300
     },
     "com.example.c001apk": {
         "y1": 256,
