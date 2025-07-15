@@ -7,7 +7,7 @@ import org.json.JSONObject
 
 object SettingUtil {
     private const val KEY = "json"
-    private var data = JSONObject();
+    var data = JSONObject();
 
     private fun getPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences("cfg", Context.MODE_PRIVATE)

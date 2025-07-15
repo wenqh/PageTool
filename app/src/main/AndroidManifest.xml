@@ -42,7 +42,6 @@
         <!-- 悬浮窗服务 -->
         <service
             android:name=".FloatingService"
-            android:enabled="true"
             android:exported="false" />
     </application>
 

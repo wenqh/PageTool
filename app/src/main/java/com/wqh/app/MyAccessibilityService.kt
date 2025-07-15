@@ -2,6 +2,7 @@ package com.wqh.app
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
+import android.content.Intent
 import android.graphics.Path
 import android.util.Log
 import android.view.KeyEvent
@@ -18,7 +19,7 @@ class MyAccessibilityService : AccessibilityService() {
 //    private var _duration: Long = 200
     lateinit var appCfg: SettingUtil.AppCfg
 
-    private var currentPackageName: String? = null
+    var currentPackageName: String? = null
     var currentClassName: String? = null
 
     companion object {
@@ -28,6 +29,9 @@ class MyAccessibilityService : AccessibilityService() {
         super.onServiceConnected()
         instance = this
         Log.i(null, "无障碍服务已连接")
+
+        SettingUtil.load(this)
+        startService(Intent(this, FloatingService::class.java))
 
         /*
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -48,6 +52,7 @@ class MyAccessibilityService : AccessibilityService() {
                 && it.packageName != "com.android.systemui"
                 && it.packageName != "com.google.android.inputmethod.latin"
                 && it.packageName != "com.xrz.standby"
+                && it.className != "android.widget.FrameLayout"
             ) {
                 currentPackageName = it.packageName?.toString()
                 currentClassName = it.className?.toString()

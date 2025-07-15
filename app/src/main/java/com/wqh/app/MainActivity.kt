@@ -42,10 +42,11 @@ class MainActivity : Activity() {
 
             startService(Intent(context, FloatingService::class.java))
             Toast.makeText(context, "服务已启动", Toast.LENGTH_SHORT).show()
+            btnAccessibility.text = "服务已启动"
         }
 
         // 初始显示当前配置
-        cfgEditText.setText(SettingUtil.load(context)?.toString(4) ?: "")
+        cfgEditText.setText(SettingUtil.data?.toString(4) ?: "")
         btnSave.setOnClickListener {
             try {
                 val jsonText = JSONObject(cfgEditText.text.toString().trim()).toString(4)

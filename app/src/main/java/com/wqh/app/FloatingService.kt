@@ -17,8 +17,8 @@ import android.os.SystemClock
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.WindowManager
-import android.widget.Toast
 import kotlin.math.abs
+
 
 class FloatingService : Service() {
 
@@ -44,7 +44,7 @@ class FloatingService : Service() {
             setStroke(1, Color.BLACK)  // 边框
         }*/
 
-        val params = WindowManager.LayoutParams().apply {
+        val layoutParams = WindowManager.LayoutParams().apply {
             type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             format = PixelFormat.TRANSLUCENT
             width = 160 // 宽度：边缘触发区域
@@ -57,7 +57,7 @@ class FloatingService : Service() {
         }
 
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        windowManager.addView(floatingView, params)
+        windowManager.addView(floatingView, layoutParams)
 
         floatingView.setOnTouchListener { v, e ->
             if (simulatedFlag) {
@@ -76,8 +76,8 @@ class FloatingService : Service() {
                     val dx = abs(e.rawX - startX)
                     val dy = abs(e.rawY - startY)
                     if (SystemClock.uptimeMillis() - actionDownTime < 200 && dx < touchSlop && dy < touchSlop) {
-                        params.flags = params.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                        windowManager.updateViewLayout(floatingView, params)
+                        layoutParams.flags = layoutParams.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                        windowManager.updateViewLayout(floatingView, layoutParams)
 
                         //发送点击事件结束后恢复悬浮窗
                         Handler(Looper.getMainLooper()).postDelayed({
@@ -88,8 +88,8 @@ class FloatingService : Service() {
                                         Path().apply { moveTo(e.rawX, e.rawY) }, 0, 50)).build(),
                                 object : AccessibilityService.GestureResultCallback() { // Kotlin 中匿名类使用 object 关键字
                                     override fun onCompleted(gestureDescription: GestureDescription?) {
-                                        params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
-                                        windowManager.updateViewLayout(floatingView, params)
+                                        layoutParams.flags = layoutParams.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
+                                        windowManager.updateViewLayout(floatingView, layoutParams)
                                         simulatedFlag = false
                                     }
                                     override fun onCancelled(gestureDescription: GestureDescription?) {
@@ -97,7 +97,7 @@ class FloatingService : Service() {
                                         onCompleted(gestureDescription)
                                     }
                                 }, null
-                            )}, 65)
+                            )}, 70)
                         floatingView.performClick()
                     } else if(dy > touchSlop && dy > dx) {
                         MyAccessibilityService.instance?.scrollApp(e.rawY <= startY)
@@ -105,8 +105,14 @@ class FloatingService : Service() {
                             floatingView.redraw(if (!mark.isNaN()) mark else y1, y2)
                         }
                     } else if (SystemClock.uptimeMillis() - actionDownTime >= 500L) {
-                        copyTextToClipboard(MyAccessibilityService.instance?.currentClassName + "\n" + e.rawY.toInt())
+                        copyTextToClipboard(MyAccessibilityService.instance?.currentPackageName + "\n"
+                                + MyAccessibilityService.instance?.currentClassName +"\n" + e.rawY.toInt())
                         floatingView.redraw(e.y, null)
+
+                        if (SystemClock.uptimeMillis() - actionDownTime >= 5000L) {
+                            layoutParams.gravity = (Gravity.START or Gravity.END) xor layoutParams.gravity or Gravity.CENTER_VERTICAL
+                            windowManager.updateViewLayout(floatingView, layoutParams)
+                        }
                     }
 
                     /*if(abs(e.rawX - startX) > abs(e.rawY - startY)) {
@@ -152,6 +158,29 @@ class FloatingService : Service() {
                         copyTextToClipboard(MyAccessibilityService.instance?.currentClassName + " " + e.rawY.toInt())
                         floatingView.redraw(e.y, null)
                     }*/
+                    /*
+                    val popupMenu = PopupMenu(this, v)
+                    popupMenu.menu.add(0, 0, 0, "暂时隐藏");
+                    popupMenu.menu.add(0, 1, 1, "切换位置");
+                    popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+                        val id = item.itemId
+                        if (id == 0) {
+                            layoutParams.flags = layoutParams.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                            windowManager.updateViewLayout(floatingView, layoutParams)
+
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                layoutParams.flags = layoutParams.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
+                                windowManager.updateViewLayout(floatingView, layoutParams)
+                            },5000)
+                        }
+                        else if (id == 1) {
+                            layoutParams.gravity = (Gravity.START or Gravity.END) xor layoutParams.gravity or Gravity.CENTER_VERTICAL
+                            windowManager.updateViewLayout(floatingView, layoutParams)
+                        }
+                        true
+                    })
+                    popupMenu.show()
+                    */
                 }
             }
 
