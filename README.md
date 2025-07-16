@@ -15,6 +15,9 @@
         "y2": 1532,
         "duration": 150
     },
+"com.google.android.youtube": {
+        "duration": 800
+    },
     "com.openai.chatgpt": {
         "y1": 165,
         "y2": 1368
