@@ -15,7 +15,7 @@
         "y2": 1532,
         "duration": 150
     },
-"com.google.android.youtube": {
+    "com.google.android.youtube": {
         "duration": 800
     },
     "com.openai.chatgpt": {
