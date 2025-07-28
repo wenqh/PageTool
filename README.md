@@ -37,11 +37,7 @@
 }
 ```
 
-
-
-
-
-
+```java
 /*
  * Copyright (C) 2012 The Android Open Source Project
  *
@@ -2056,4 +2052,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
     }
 }
+
+```
 
