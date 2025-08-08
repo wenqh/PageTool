@@ -33,6 +33,10 @@
     "com.huanchengfly.tieba.post": {
         "y1": 273,
         "y2": 1514
+    },
+    "org.telegram.messenger": {
+        "y1": 244,
+        "y2": 1555
     }
 }
 ```
