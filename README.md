@@ -37,6 +37,10 @@
     "org.telegram.messenger": {
         "y1": 244,
         "y2": 1555
+    },
+    "com.zhihu.hydrogen.x": {
+        "y1": 140,
+        "duration": 150
     }
 }
 ```
