@@ -25,6 +25,10 @@
         "y1": 165,
         "y2": 1368
     },
+    "com.spotify.music": {
+        "y1": 150,
+        "y2": 1431
+    },
     "com.guozhigq.pilipala": {
         "y1": 315,
         "duration": 300
