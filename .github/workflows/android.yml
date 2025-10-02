@@ -3,9 +3,9 @@ name: Build Android APK
 on:
   push:
     branches:
-      - main   # 或者 master，看你项目默认分支
+      - main
   pull_request:
-  workflow_dispatch:   # 支持手动触发
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,17 +15,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17' # Android Gradle Plugin 8.x 推荐用 JDK 17
+          java-version: '17'
+          cache: gradle
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
-
-      - name: Build with Gradle
-        run: ./gradlew assembleDebug
+      - name: Build debug APK
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
