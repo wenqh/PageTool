@@ -73,7 +73,7 @@ class FloatingService : Service() {
                     WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS //全屏*/
             gravity = Gravity.END or Gravity.CENTER_VERTICAL
         }
-``
+
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.addView(floatingView1, layoutParams1)
         windowManager.addView(floatingView2, layoutParams2)
@@ -127,7 +127,7 @@ class FloatingService : Service() {
                             floatingView1.redraw(if (!mark.isNaN()) mark else y1, y2)
                             floatingView2.redraw(if (!mark.isNaN()) mark else y1, y2)
                         }
-                    } else if (SystemClock.uptimeMillis() - actionDownTime >= 500L) {
+                    } else if (SystemClock.uptimeMillis() - actionDownTime >= 3000L/*500*/) {
                         copyTextToClipboard(MyAccessibilityService.instance?.currentPackageName + "\n"
                                 + MyAccessibilityService.instance?.currentClassName +"\n" + e.rawY.toInt())
                         floatingView1.redraw(e.y, null)
