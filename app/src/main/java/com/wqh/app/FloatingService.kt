@@ -64,10 +64,7 @@ class FloatingService : Service() {
             format = PixelFormat.TRANSLUCENT
             width = 50 // 宽度：边缘触发区域
             height = WindowManager.LayoutParams.MATCH_PARENT
-            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-
-
-
+            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                     WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
                     WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN /*or //全屏
                     WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS //全屏*/
