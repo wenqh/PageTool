@@ -25,14 +25,14 @@ jobs:
       - name: Build debug APK
         run: |
           chmod +x ./gradlew
-          ./gradlew assembleDebug
+          ./gradlew :app:assembleDebug --stacktrace
+
+      - name: Show outputs
+        run: ls -R app/build/outputs || true
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
-          path: '**/build/outputs/apk/debug/*.apk'
-
-
-
-
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
