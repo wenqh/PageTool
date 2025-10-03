@@ -16,6 +16,7 @@ import android.os.Looper
 import android.os.SystemClock
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.View
 import android.view.WindowManager
 import kotlin.math.abs
 
@@ -23,7 +24,8 @@ import kotlin.math.abs
 class FloatingService : Service() {
 
     private lateinit var windowManager: WindowManager
-    private lateinit var floatingView: MyOverlayView
+    private lateinit var floatingView1: MyOverlayView
+    private lateinit var floatingView2: MyOverlayView
 
     private var startX = 0f
     private var startY = 0f
@@ -35,8 +37,10 @@ class FloatingService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        floatingView = MyOverlayView(this)
-        floatingView.setBackgroundColor(Color.TRANSPARENT) // 完全透明
+        floatingView1 = MyOverlayView(this)
+        floatingView2 = MyOverlayView(this)
+        floatingView1.setBackgroundColor(Color.TRANSPARENT) // 完全透明
+        floatingView2.setBackgroundColor(Color.TRANSPARENT) // 完全透明
 //        floatingView.setBackgroundColor(0x22000000) // 半透明
         /*floatingView.background = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
@@ -44,26 +48,44 @@ class FloatingService : Service() {
             setStroke(1, Color.BLACK)  // 边框
         }*/
 
-        val layoutParams = WindowManager.LayoutParams().apply {
+        val layoutParams1 = WindowManager.LayoutParams().apply {
             type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             format = PixelFormat.TRANSLUCENT
-            width = 160 // 宽度：边缘触发区域
+            width = 50 // 宽度：边缘触发区域
             height = WindowManager.LayoutParams.MATCH_PARENT
             flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                     WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
                     WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN /*or //全屏
                     WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS //全屏*/
+            gravity = Gravity.START or Gravity.CENTER_VERTICAL
+        }
+        val layoutParams2 = WindowManager.LayoutParams().apply {
+            type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            format = PixelFormat.TRANSLUCENT
+            width = 50 // 宽度：边缘触发区域
+            height = WindowManager.LayoutParams.MATCH_PARENT
+            flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+
+
+
+                    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN /*or //全屏
+                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS //全屏*/
             gravity = Gravity.END or Gravity.CENTER_VERTICAL
         }
-
+``
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        windowManager.addView(floatingView, layoutParams)
+        windowManager.addView(floatingView1, layoutParams1)
+        windowManager.addView(floatingView2, layoutParams2)
 
-        floatingView.setOnTouchListener { v, e ->
+        val touchListener = View.OnTouchListener{ v, e ->
+            val layoutParams = v.layoutParams as WindowManager.LayoutParams
+
+
             if (simulatedFlag) {
-                floatingView.setBackgroundColor(Color.BLACK)
-                Handler(Looper.getMainLooper()).postDelayed({floatingView.setBackgroundColor(Color.TRANSPARENT)}, 500)
-                return@setOnTouchListener true
+                v.setBackgroundColor(Color.BLACK)
+                Handler(Looper.getMainLooper()).postDelayed({v.setBackgroundColor(Color.TRANSPARENT)}, 500)
+                return@OnTouchListener true
             }
             when (e.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -77,7 +99,7 @@ class FloatingService : Service() {
                     val dy = abs(e.rawY - startY)
                     if (SystemClock.uptimeMillis() - actionDownTime < 200 && dx < touchSlop && dy < touchSlop) {
                         layoutParams.flags = layoutParams.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                        windowManager.updateViewLayout(floatingView, layoutParams)
+                        windowManager.updateViewLayout(v, layoutParams)
 
                         //发送点击事件结束后恢复悬浮窗
                         Handler(Looper.getMainLooper()).postDelayed({
@@ -89,7 +111,7 @@ class FloatingService : Service() {
                                 object : AccessibilityService.GestureResultCallback() { // Kotlin 中匿名类使用 object 关键字
                                     override fun onCompleted(gestureDescription: GestureDescription?) {
                                         layoutParams.flags = layoutParams.flags and WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE.inv()
-                                        windowManager.updateViewLayout(floatingView, layoutParams)
+                                        windowManager.updateViewLayout(v, layoutParams)
                                         simulatedFlag = false
                                     }
                                     override fun onCancelled(gestureDescription: GestureDescription?) {
@@ -98,21 +120,23 @@ class FloatingService : Service() {
                                     }
                                 }, null
                             )}, 70)
-                        floatingView.performClick()
+                        v.performClick()
                     } else if(dy > touchSlop && dy > dx) {
                         MyAccessibilityService.instance?.scrollApp(e.rawY <= startY)
                         MyAccessibilityService.instance?.appCfg?.apply {
-                            floatingView.redraw(if (!mark.isNaN()) mark else y1, y2)
+                            floatingView1.redraw(if (!mark.isNaN()) mark else y1, y2)
+                            floatingView2.redraw(if (!mark.isNaN()) mark else y1, y2)
                         }
                     } else if (SystemClock.uptimeMillis() - actionDownTime >= 500L) {
                         copyTextToClipboard(MyAccessibilityService.instance?.currentPackageName + "\n"
                                 + MyAccessibilityService.instance?.currentClassName +"\n" + e.rawY.toInt())
-                        floatingView.redraw(e.y, null)
+                        floatingView1.redraw(e.y, null)
 
-                        if (SystemClock.uptimeMillis() - actionDownTime >= 5000L) {
+                        //换位
+                        /*if (SystemClock.uptimeMillis() - actionDownTime >= 5000L) {
                             layoutParams.gravity = (Gravity.START or Gravity.END) xor layoutParams.gravity or Gravity.CENTER_VERTICAL
-                            windowManager.updateViewLayout(floatingView, layoutParams)
-                        }
+                            windowManager.updateViewLayout(floatingView1, layoutParams)
+                        }*/
                     }
 
                     /*if(abs(e.rawX - startX) > abs(e.rawY - startY)) {
@@ -184,13 +208,16 @@ class FloatingService : Service() {
                 }
             }
 
-            return@setOnTouchListener true;
+            return@OnTouchListener true;
         }
+        floatingView1.setOnTouchListener(touchListener)
+        floatingView2.setOnTouchListener(touchListener)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        windowManager.removeView(floatingView)
+        windowManager.removeView(floatingView1)
+        windowManager.removeView(floatingView2)
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
