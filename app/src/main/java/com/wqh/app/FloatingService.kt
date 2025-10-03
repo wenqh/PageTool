@@ -127,7 +127,7 @@ class FloatingService : Service() {
                             floatingView1.redraw(if (!mark.isNaN()) mark else y1, y2)
                             floatingView2.redraw(if (!mark.isNaN()) mark else y1, y2)
                         }
-                    } else if (SystemClock.uptimeMillis() - actionDownTime >= 3000L/*500*/) {
+                    } else if (SystemClock.uptimeMillis() - actionDownTime >= 500L) {
                         copyTextToClipboard(MyAccessibilityService.instance?.currentPackageName + "\n"
                                 + MyAccessibilityService.instance?.currentClassName +"\n" + e.rawY.toInt())
                         floatingView1.redraw(e.y, null)
